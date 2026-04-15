@@ -1,0 +1,21 @@
+services:
+  pricalicawebapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pricalicawebapp-dev
+    ports:
+      - '9000:9000'
+    volumes:
+      - .:/app
+      - pricalica_node_modules:/app/node_modules
+    environment:
+      CHOKIDAR_USEPOLLING: 'true'
+      CHOKIDAR_INTERVAL: '100'
+      WATCHPACK_POLLING: 'true'
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3000}
+    stdin_open: true
+    tty: true
+
+volumes:
+  pricalica_node_modules:

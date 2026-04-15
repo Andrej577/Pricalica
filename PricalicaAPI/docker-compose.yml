@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    command: ["node", "index.js"]
+    networks:
+      - pricalica-network
+
+  test:
+    build: .
+    container_name: pricalica-test
+    command: ["npm", "test", "--", "--ci", "--detectOpenHandles"]
+    environment:
+      NODE_ENV: test
+    networks:
+      - pricalica-network
+
+volumes:
+  node_modules:
+
+networks:
+  pricalica-network:
+    external: true

@@ -1,0 +1,15 @@
+services:
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.59.1-jammy
+    container_name: pricalica-e2e-playwright
+    working_dir: /e2e
+    environment:
+      PLAYWRIGHT_BASE_URL: 'http://host.docker.internal:9000'
+      PLAYWRIGHT_API_URL: 'http://host.docker.internal:3000'
+    volumes:
+      - .:/e2e
+      - pricalica_e2e_node_modules:/e2e/node_modules
+    command: sh -c "npm ci && npx playwright test"
+
+volumes:
+  pricalica_e2e_node_modules:

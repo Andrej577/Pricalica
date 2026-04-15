@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  mp3server:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./music:/app/music
