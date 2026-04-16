@@ -1,11 +1,19 @@
+function isLocalHost(hostname) {
+  return hostname === 'localhost' || hostname === '127.0.0.1'
+}
+
 function buildBrowserDefaultUrl() {
   if (typeof window === 'undefined') {
     return 'http://localhost:3000'
   }
 
-  const { hostname } = window.location
-  const normalizedHostname =
-    hostname === 'localhost' || hostname === '127.0.0.1' ? 'localhost' : hostname
+  const { hostname, origin, protocol } = window.location
+
+  if (protocol === 'https:' && !isLocalHost(hostname)) {
+    return `${origin}/api`
+  }
+
+  const normalizedHostname = isLocalHost(hostname) ? 'localhost' : hostname
 
   return `http://${normalizedHostname}:3000`
 }
@@ -17,20 +25,18 @@ function normalizeApiBaseUrl(rawUrl) {
 
   try {
     const parsedUrl = new URL(rawUrl)
-    const currentHostname = window.location.hostname
-    const isLocalBrowser =
-      currentHostname === 'localhost' || currentHostname === '127.0.0.1'
-    const isLocalApi =
-      parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1'
+    const { hostname: currentHostname, origin, protocol } = window.location
+    const isLocalBrowser = isLocalHost(currentHostname)
+    const isLocalApi = isLocalHost(parsedUrl.hostname)
     const isDirectNodePort = parsedUrl.port === '3000'
 
     if (!isLocalBrowser && isLocalApi) {
       parsedUrl.hostname = currentHostname
     }
 
-    // Backend on port 3000 is served without TLS; keep proxied /api URLs untouched.
-    if (parsedUrl.protocol === 'https:' && isDirectNodePort) {
-      parsedUrl.protocol = 'http:'
+    // Production HTTPS must use the reverse-proxied API endpoint to avoid mixed content.
+    if (!isLocalBrowser && protocol === 'https:' && isDirectNodePort) {
+      return `${origin}/api`
     }
 
     return parsedUrl.toString().replace(/\/$/, '')
