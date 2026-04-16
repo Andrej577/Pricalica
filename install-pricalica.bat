@@ -24,6 +24,12 @@ docker compose up --build -d
 popd
 
 echo.
+echo Pokrecem music service...
+pushd Pricalica-music-service
+docker compose up --build -d
+popd
+
+echo.
 echo Pokrecem web aplikaciju...
 pushd PricalicaWebApp\pricalicaWebApp
 docker compose up --build -d
@@ -33,6 +39,7 @@ echo.
 echo Instalacija / pokretanje zavrseno.
 echo DB:  MySQL na localhost:3306
 echo API: http://localhost:3000
+echo MUSIC: http://localhost:5000
 echo WEB: http://localhost:9000
 
 endlocal

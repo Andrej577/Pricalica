@@ -58,7 +58,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import axios from 'axios'
-import { API_BASE_URL } from 'src/config/api'
+import { API_BASE_URL, MUSIC_BASE_URL } from 'src/config/api'
 import { getCurrentUserId } from 'src/composables/auth'
 
 const route = useRoute()
@@ -91,7 +91,8 @@ const audioSrc = computed(() => {
     return poveznica
   }
 
-  return `http://localhost:5000/stream?file=sample.mp3`
+  const params = new URLSearchParams({ file: poveznica })
+  return `${MUSIC_BASE_URL}/stream?${params.toString()}`
 })
 
 onMounted(() => {

@@ -8,6 +8,7 @@ Sustav se sastoji od tri glavna dijela:
 
 - `PricalicaDB` - MySQL baza podataka i inicijalna struktura/podaci
 - `PricalicaAPI` - Node.js / Express REST API
+- `Pricalica-music-service` - Flask servis za MP3 streaming i konverziju
 - `PricalicaWebApp/pricalicaWebApp` - Vue.js / Quasar web aplikacija
 
 Preporuceni nacin instalacije je preko Dockera jer su u repozitoriju vec pripremljene `docker-compose.yml` datoteke.
@@ -19,6 +20,7 @@ Za Windows okruzenje moze se koristiti skripta [install-pricalica.bat](install-p
 - provjerava postoji li Docker mreza `pricalica-network`
 - podize bazu podataka
 - podize API
+- podize music service
 - podize web aplikaciju
 
 Skripta se pokrece iz korijena repozitorija:
@@ -39,6 +41,7 @@ Za potpuno pocetno postavljanje na novom racunalu moze se koristiti i skripta [b
 - klonira projekt s GitHuba
 - podize `PricalicaDB`
 - podize `PricalicaAPI`
+- podize `Pricalica-music-service`
 - podize `PricalicaWebApp`
 - pokrece `PricalicaE2E` testove na kraju
 
@@ -174,6 +177,17 @@ docker compose up --build -d
 
 Web aplikacija koristi varijablu `VITE_API_BASE_URL` za adresu API-ja. U Docker development postavi trenutno je postavljena na `http://localhost:3000`.
 
+### Music service
+
+Music service se nalazi u mapi `Pricalica-music-service` i radi na portu `5000`.
+
+Lokalno pokretanje:
+
+```bash
+cd Pricalica-music-service
+docker compose up --build -d
+```
+
 ## 5.2.6 Postavljanje SSL (self-signed ili pravi certifikat)
 
 U trenutnom repozitoriju nije definirana gotova SSL konfiguracija za produkcijsko okruzenje. Zato je preporuka koristiti reverse proxy, npr. `Nginx`, ispred web aplikacije i API-ja.
@@ -187,6 +201,7 @@ Preporucena produkcijska postava:
 
 - `https://domena` -> web aplikacija
 - `https://domena/api` -> prosljedivanje prema API servisu na portu `3000`
+- `https://domena/music` -> prosljedivanje prema music service servisu na portu `5000`
 
 Za potrebe dokumentacije dovoljno je navesti:
 
@@ -202,13 +217,15 @@ Preporuceni redoslijed implementacije i instalacije:
 2. kreirati Docker mrezu `pricalica-network`
 3. podici DB server i inicijalnu bazu iz `PricalicaDB`
 4. podici API iz `PricalicaAPI`
-5. podici web aplikaciju iz `PricalicaWebApp/pricalicaWebApp`
-6. po potrebi dodati SSL preko reverse proxy sloja
+5. podici music service iz `Pricalica-music-service`
+6. podici web aplikaciju iz `PricalicaWebApp/pricalicaWebApp`
+7. po potrebi dodati SSL preko reverse proxy sloja
 
 ## Kratka provjera nakon instalacije
 
 - MySQL baza dostupna na `localhost:3306`
 - API dostupan na `http://localhost:3000`
+- music service dostupan na `http://localhost:5000`
 - web aplikacija dostupna na `http://localhost:9000`
 
 Ako je sve ispravno podignuto, web aplikacija bi trebala komunicirati s API-jem, a API s MySQL bazom.

@@ -2,20 +2,24 @@ function isLocalHost(hostname) {
   return hostname === 'localhost' || hostname === '127.0.0.1'
 }
 
-function buildBrowserDefaultUrl() {
+function buildBrowserServiceUrl(port, pathPrefix) {
   if (typeof window === 'undefined') {
-    return 'http://localhost:3000'
+    return `http://localhost:${port}`
   }
 
   const { hostname, origin, protocol } = window.location
 
   if (protocol === 'https:' && !isLocalHost(hostname)) {
-    return `${origin}/api`
+    return `${origin}${pathPrefix}`
   }
 
   const normalizedHostname = isLocalHost(hostname) ? 'localhost' : hostname
 
-  return `http://${normalizedHostname}:3000`
+  return `http://${normalizedHostname}:${port}`
+}
+
+function buildBrowserDefaultUrl() {
+  return buildBrowserServiceUrl(3000, '/api')
 }
 
 function normalizeApiBaseUrl(rawUrl) {
@@ -48,3 +52,4 @@ function normalizeApiBaseUrl(rawUrl) {
 const configuredApiBaseUrl = normalizeApiBaseUrl(import.meta.env.VITE_API_BASE_URL)
 
 export const API_BASE_URL = configuredApiBaseUrl || buildBrowserDefaultUrl()
+export const MUSIC_BASE_URL = buildBrowserServiceUrl(5000, '/music')

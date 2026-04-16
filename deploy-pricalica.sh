@@ -74,6 +74,10 @@ start_stack() {
   compose_run "PricalicaAPI" up --build -d app
   wait_seconds 10 "Cekam da se API podigne"
 
+  log "Podizem Pricalica-music-service"
+  compose_run "Pricalica-music-service" up --build -d
+  wait_seconds 10 "Cekam da se music service podigne"
+
   log "Podizem PricalicaWebApp"
   compose_run "PricalicaWebApp/pricalicaWebApp" up --build -d
   wait_seconds 20 "Cekam da se web aplikacija podigne"
@@ -81,6 +85,7 @@ start_stack() {
   log "Deploy zavrsen"
   echo "DB:  localhost:3306"
   echo "API: http://localhost:3000"
+  echo "MUSIC: http://localhost:5000"
   echo "WEB: http://localhost:9000"
 
   if [[ "$RUN_E2E" == true ]]; then
@@ -95,6 +100,9 @@ stop_stack() {
 
   log "Gasim PricalicaWebApp"
   compose_run "PricalicaWebApp/pricalicaWebApp" down -v || true
+
+  log "Gasim Pricalica-music-service"
+  compose_run "Pricalica-music-service" down -v || true
 
   log "Gasim PricalicaAPI"
   compose_run "PricalicaAPI" down -v || true
@@ -114,6 +122,9 @@ print_status() {
 
   log "Status PricalicaWebApp"
   compose_run "PricalicaWebApp/pricalicaWebApp" ps || true
+
+  log "Status Pricalica-music-service"
+  compose_run "Pricalica-music-service" ps || true
 
   log "Status PricalicaE2E"
   compose_run "PricalicaE2E" ps || true

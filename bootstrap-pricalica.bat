@@ -6,7 +6,7 @@ REM Pricalica bootstrap skripta
 REM 1. Po potrebi instalira Git preko winget-a
 REM 2. Klonira GitHub repozitorij
 REM 3. Kreira Docker mrezu
-REM 4. Podize DB -> API -> Web
+REM 4. Podize DB -> API -> Music -> Web
 REM 5. Pokrece E2E testove
 REM
 REM Primjer:
@@ -120,7 +120,22 @@ echo Cekam 10 sekundi da se API podigne...
 timeout /t 10 /nobreak >nul
 
 echo.
-echo [3/4] Podizem PricalicaWebApp...
+echo.
+echo [3/5] Podizem Pricalica-music-service...
+pushd "%TARGET_DIR%\Pricalica-music-service"
+docker compose up --build -d
+if errorlevel 1 (
+  echo Neuspjelo podizanje Pricalica-music-service.
+  popd
+  exit /b 1
+)
+popd
+
+echo Cekam 10 sekundi da se music service podigne...
+timeout /t 10 /nobreak >nul
+
+echo.
+echo [4/5] Podizem PricalicaWebApp...
 pushd "%TARGET_DIR%\PricalicaWebApp\pricalicaWebApp"
 docker compose up --build -d
 if errorlevel 1 (
@@ -134,7 +149,7 @@ echo Cekam 20 sekundi da se web aplikacija podigne...
 timeout /t 20 /nobreak >nul
 
 echo.
-echo [4/4] Pokrecem PricalicaE2E testove...
+echo [5/5] Pokrecem PricalicaE2E testove...
 pushd "%TARGET_DIR%\PricalicaE2E"
 docker compose up --build --abort-on-container-exit playwright
 set "E2E_EXIT=%ERRORLEVEL%"
@@ -144,6 +159,7 @@ echo.
 echo === Status servisa ===
 echo DB:  MySQL na localhost:3306
 echo API: http://localhost:3000
+echo MUSIC: http://localhost:5000
 echo WEB: http://localhost:9000
 
 if not "%E2E_EXIT%"=="0" (
