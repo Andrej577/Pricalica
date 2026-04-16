@@ -9,6 +9,15 @@
         <q-btn
           flat
           no-caps
+          icon="description"
+          label="Upute"
+          data-testid="manual-button"
+          @click="openManual"
+        />
+
+        <q-btn
+          flat
+          no-caps
           icon="logout"
           label="Odjava"
           data-testid="logout-button"
@@ -111,6 +120,10 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
+function openManual() {
+  window.open('/manuals/Pricalica_upute_spojeno_v2.pdf', '_blank', 'noopener,noreferrer')
+}
+
 async function logout() {
   clearCurrentUserRole()
   await router.push('/login')
@@ -131,6 +144,10 @@ async function logout() {
 .page-leave-to {
   opacity: 0;
   transform: translateX(-20px);
+}
+
+[data-testid='manual-button'] {
+  margin-left: auto;
 }
 
 [data-testid='logout-button'] {
