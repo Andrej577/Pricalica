@@ -1,15 +1,12 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Instaliraj pakete
-RUN npm install cors express mysql2 dotenv jest supertest
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Kopiraj ostatak aplikacije
 COPY . .
 
-# Port koji app koristi
 EXPOSE 3000
 
-# Start
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
