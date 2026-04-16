@@ -14,10 +14,24 @@ app = Flask(__name__)
 PDF_FOLDER = Path("pdf")
 TEXT_FOLDER = Path("text")
 AUDIO_FOLDER = Path("audio")
+LEGACY_AUDIO_FOLDER = Path("music")
 
 # Make sure folders exist
-for folder in [PDF_FOLDER, TEXT_FOLDER, AUDIO_FOLDER]:
+for folder in [PDF_FOLDER, TEXT_FOLDER, AUDIO_FOLDER, LEGACY_AUDIO_FOLDER]:
     folder.mkdir(exist_ok=True)
+
+
+def resolve_audio_path(file_name):
+    for folder in (AUDIO_FOLDER, LEGACY_AUDIO_FOLDER):
+        candidate = folder / file_name
+        if candidate.is_file():
+            return candidate
+
+    bundled_sample = AUDIO_FOLDER / "sample.mp3"
+    if file_name == "sample.mp3" and bundled_sample.is_file():
+        return bundled_sample
+
+    return None
 
 
 @app.route("/")
@@ -30,9 +44,10 @@ def index():
 @app.route("/audio")
 def getAudios():
     files = []
-    for file in AUDIO_FOLDER.iterdir():
-        if file.is_file():
-            files.append(file.name)
+    for folder in (AUDIO_FOLDER, LEGACY_AUDIO_FOLDER):
+        for file in folder.iterdir():
+            if file.is_file() and file.name not in files:
+                files.append(file.name)
     return jsonify(files)
 
 @app.route('/stream')
@@ -41,9 +56,8 @@ def stream_audio():
     if not file_name:
         return abort(400, description="Missing 'file' query parameter.")
 
-    file_path = os.path.join(AUDIO_FOLDER, file_name)
-
-    if not os.path.isfile(file_path):
+    file_path = resolve_audio_path(file_name)
+    if file_path is None:
         return abort(404, description="File not found.")
 
     # DEFAULTNO CHUNK SIZE ODREDJUJE KLIJENT - BROWSER 
