@@ -3,11 +3,11 @@ function buildBrowserDefaultUrl() {
     return 'http://localhost:3000'
   }
 
-  const { protocol, hostname } = window.location
+  const { hostname } = window.location
   const normalizedHostname =
     hostname === 'localhost' || hostname === '127.0.0.1' ? 'localhost' : hostname
 
-  return `${protocol}//${normalizedHostname}:3000`
+  return `http://${normalizedHostname}:3000`
 }
 
 function normalizeApiBaseUrl(rawUrl) {

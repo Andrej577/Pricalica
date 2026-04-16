@@ -61,10 +61,9 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import { API_BASE_URL } from 'src/config/api'
+import { api } from 'src/boot/axios'
 import { clearCurrentUserRole, setCurrentUserId, setCurrentUserRole } from 'src/composables/auth'
 
 const ADMIN_EMAIL = 'maja.peric@example.com'
@@ -106,7 +105,7 @@ async function submitLogin() {
   submittingLogin.value = true
 
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, {
+    const response = await api.post('/login', {
       email: loginForm.email,
       lozinka: loginForm.lozinka,
     })
