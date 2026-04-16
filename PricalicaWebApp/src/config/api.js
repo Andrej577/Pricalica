@@ -22,9 +22,15 @@ function normalizeApiBaseUrl(rawUrl) {
       currentHostname === 'localhost' || currentHostname === '127.0.0.1'
     const isLocalApi =
       parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1'
+    const isDirectNodePort = parsedUrl.port === '3000'
 
     if (!isLocalBrowser && isLocalApi) {
       parsedUrl.hostname = currentHostname
+    }
+
+    // Backend on port 3000 is served without TLS; keep proxied /api URLs untouched.
+    if (parsedUrl.protocol === 'https:' && isDirectNodePort) {
+      parsedUrl.protocol = 'http:'
     }
 
     return parsedUrl.toString().replace(/\/$/, '')
