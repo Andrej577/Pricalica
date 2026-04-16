@@ -87,11 +87,7 @@ const audioSrc = computed(() => {
     return ''
   }
 
-  if (poveznica.startsWith('http://') || poveznica.startsWith('https://')) {
-    return poveznica
-  }
-
-  const params = new URLSearchParams({ file: poveznica })
+  const params = new URLSearchParams({ file: 'sample.mp3' })
   return `${MUSIC_BASE_URL}/stream?${params.toString()}`
 })
 
