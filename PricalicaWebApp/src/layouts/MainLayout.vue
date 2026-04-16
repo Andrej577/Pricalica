@@ -14,15 +14,6 @@
           data-testid="manual-button"
           @click="openManual"
         />
-
-        <q-btn
-          flat
-          no-caps
-          icon="logout"
-          label="Odjava"
-          data-testid="logout-button"
-          @click="logout"
-        />
       </q-toolbar>
     </q-header>
 
@@ -148,9 +139,5 @@ async function logout() {
 
 [data-testid='manual-button'] {
   margin-left: auto;
-}
-
-[data-testid='logout-button'] {
-  margin-left: 12px;
 }
 </style>

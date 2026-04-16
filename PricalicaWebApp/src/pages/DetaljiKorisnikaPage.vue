@@ -15,7 +15,7 @@
               data-testid="delete-account-button"
               @click="obrisiRacun"
             />
-            <q-btn label="Spremi" color="positive" type="submit" data-testid="save-user-button" />
+            <q-btn label="Spremi" color="primary" type="submit" data-testid="save-user-button" />
           </div>
         </div>
 
